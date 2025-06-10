@@ -1,50 +1,41 @@
 package com.premonitora.model;
 
 import jakarta.persistence.*;
-
-import java.util.Scanner;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_perfil")
+@Table(name = "perfis")
 public class Perfil extends Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bairro_id", referencedColumnName = "id")
+    private String nome;
+    private String cpf;
+    private int idade;
+    private String endereco;
+    private String senha;
+
+    @ManyToOne
     private Bairro bairroAtual;
 
-    public Perfil() {}
+    private boolean premium;
 
-    public Bairro getBairroAtual() {
-        return bairroAtual;
-    }
-
-    public void setBairroAtual(Bairro bairroAtual) {
-        this.bairroAtual = bairroAtual;
-    }
-
-    public void trocarSenhaInterativa(Scanner scanner) {
-        System.out.print("Digite a senha atual: ");
-        String senhaAtual = scanner.nextLine();
-        System.out.print("Digite a nova senha: ");
-        String novaSenha = scanner.nextLine();
-        super.trocarSenha(senhaAtual, novaSenha);
-    }
-
-    public void assinarModoPremium(Scanner scanner) {
-        System.out.println("\nDeseja assinar o Modo Premium?");
-        System.out.println("\"Premium Vigilante R$ 4,99/mês\"");
-        System.out.println("1. Assinar");
-        System.out.println("2. Cancelar");
-
-        String escolha = scanner.nextLine();
-
-        if (escolha.equals("1")) {
-            System.out.println("Você assinou o Modo Premium!");
-        } else if (escolha.equals("2")) {
-            System.out.println("Assinatura cancelada.");
-        } else {
-            System.out.println("Opção inválida.");
-        }
-    }
+    // Getters e setters
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public int getIdade() { return idade; }
+    public void setIdade(int idade) { this.idade = idade; }
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public Bairro getBairroAtual() { return bairroAtual; }
+    public void setBairroAtual(Bairro bairroAtual) { this.bairroAtual = bairroAtual; }
+    public boolean isPremium() { return premium; }
+    public void setPremium(boolean premium) { this.premium = premium; }
 }

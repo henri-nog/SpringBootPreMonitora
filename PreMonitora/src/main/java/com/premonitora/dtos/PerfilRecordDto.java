@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record PerfilRecordDto(
         @NotBlank String nome,
         @NotBlank String cpf,
-        @NotNull int idade,
+        @NotNull Integer idade,
         @NotBlank String endereco,
         @NotBlank String senha
 ) {}

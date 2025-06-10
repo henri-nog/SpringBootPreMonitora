@@ -4,33 +4,20 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_bairro")
+@Table(name = "bairros")
 public class Bairro {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
     private String nome;
-
-    @Column(nullable = false)
     private int numRegistros;
 
-    // Construtores
-    public Bairro() {}
-
-    public Bairro(String nome, int numRegistros) {
-        this.nome = nome;
-        this.numRegistros = numRegistros;
-    }
-
-    // Getters e Setters
+    // Getters e setters
     public UUID getId() { return id; }
-
+    public void setId(UUID id) { this.id = id; }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
-
     public int getNumRegistros() { return numRegistros; }
     public void setNumRegistros(int numRegistros) { this.numRegistros = numRegistros; }
 
@@ -40,6 +27,6 @@ public class Bairro {
 
     @Override
     public String toString() {
-        return nome + " (Registros: " + numRegistros + ")";
+        return nome + " (Nº de Registros: " + numRegistros + ")";
     }
 }
