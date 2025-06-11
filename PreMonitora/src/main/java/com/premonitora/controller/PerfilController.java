@@ -5,41 +5,49 @@ import com.premonitora.model.Perfil;
 import com.premonitora.repository.PerfilRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
 
 @RestController
 @RequestMapping("/perfil")
 public class PerfilController {
 
-    @Autowired
-    private PerfilRepository repository;
+    private final PerfilRepository repository;
+
+    public PerfilController(PerfilRepository repository) {
+        this.repository = repository;
+    }
 
     @PostMapping
-    public ResponseEntity<Perfil> create(@RequestBody @Valid PerfilRecordDto dto) {
+    public ResponseEntity<Object> create(@RequestBody @Valid PerfilRecordDto dto) {
         Perfil perfil = new Perfil();
         BeanUtils.copyProperties(dto, perfil);
         return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(perfil));
     }
 
     @GetMapping
-    public List<Perfil> findAll() {
-        return repository.findAll();
+    public ResponseEntity<List<Perfil>> findAll() {
+        return ResponseEntity.ok(repository.findAll());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+        return repository.findById(id)
+                .map(perfil -> {
+                    repository.delete(perfil);
+                    return ResponseEntity.ok((Object) "Perfil deletado com sucesso");
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body((Object) "Perfil não encontrado"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOnePerfil(@PathVariable UUID id) {
-        Optional<Perfil> perfil = repository.findById(id);
-        if (perfil.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Perfil não encontrado"); // ✅ agora é válido
-        }
-        return ResponseEntity.ok(perfil.get());
+        return repository.findById(id)
+                .map(perfil -> ResponseEntity.ok((Object) perfil))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body((Object) "Perfil não encontrado"));
     }
 
     @PutMapping("/{id}")
@@ -47,20 +55,9 @@ public class PerfilController {
         return repository.findById(id)
                 .map(perfil -> {
                     BeanUtils.copyProperties(dto, perfil);
-                    return ResponseEntity.ok(repository.save(perfil));
+                    Perfil perfilAtualizado = repository.save(perfil);
+                    return ResponseEntity.ok((Object) perfilAtualizado);
                 })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Perfil não encontrado"));
-    }
-
-
-
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable UUID id) {
-        return repository.findById(id).map(p -> {
-            repository.delete(p);
-            return ResponseEntity.noContent().build();
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Perfil não encontrado"));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body((Object) "Perfil não encontrado"));
     }
 }

@@ -10,6 +10,4 @@ public class Perfil extends Usuario {
     @ManyToOne
     @JoinColumn(name = "bairro_id", nullable = true)
     private Bairro bairroAtual;
-
-    // métodos específicos de Perfil
 }
